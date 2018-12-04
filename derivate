@@ -1,0 +1,50 @@
+
+
+import numpy as np
+import math
+
+
+def deriv(W1,W2,W3,mu,sig,y_hat,x_assess,R):
+    betaR = 10
+    betamu = 8
+    betasig = 18
+
+    f1=np.log(2*math.pi*sig)
+    f2=np.dot(y_hat-mu,(y_hat-mu).T)/(2*np.dot(sig,sig.T))
+    ln_pi= f1-f2
+    print('the neperien log of the policy',ln_pi)
+
+    df1_dsig=-sig/2
+    print('deriv of f1/sigma',df1_dsig,df1_dsig.shape)
+
+    dsig_dR=-np.dot(np.dot(sig,(1-sig).T),betasig*W3)
+    print('deriv of sigma/R',dsig_dR,dsig_dR.shape)
+
+    dR_dw1=-np.dot(np.multiply(R,(1-R)),betaR*x_assess.T) #multiplication valeur par valeur
+    print('deriv of R/w1',dR_dw1,dR_dw1.shape)
+
+    df2_dmu=-2*(y_hat-mu)
+    print('deriv of f2/mu',df2_dmu,df2_dmu.shape)
+
+    df2_dsig=np.multiply(y_hat-mu,(y_hat-mu)) /np.dot(sig,sig.T)
+    print('deriv of f2/sig',df2_dsig,df2_dsig.shape)
+
+    dsig_dw3=-np.dot(np.multiply(sig,(1-sig)),(betasig*R).T)
+    print('deriv of sigma/w3',dsig_dw3,dsig_dw3.shape)
+
+    dmu_dw2=-np.dot(np.multiply(mu,(1-mu).T),(betamu*R).T)
+    print('deriv of mu/w2',dmu_dw2,dmu_dw2.shape)
+
+    dmu_dR=-np.dot(np.dot(mu,(1-mu).T),betamu*W2)
+    print('deriv of mu/R', dmu_dR,dmu_dR.shape)
+
+    dlnpi_dw1= (np.dot(df1_dsig.T,np.dot(dsig_dR,dR_dw1)))+ (np.dot(df2_dmu.T ,np.dot(dmu_dR,dR_dw1))) + (np.dot(df2_dsig.T, np.dot(dsig_dR,dR_dw1)))
+    print('deriv of log policy/w1',dlnpi_dw1,dlnpi_dw1.shape)
+
+    dlnpi_dw2=df2_dmu*dmu_dw2
+    print('deriv of log policy/w2', dlnpi_dw2,dlnpi_dw2.shape)
+
+    dlnpi_dw3 = (df1_dsig +df2_dsig).T *dsig_dw3
+    print('deriv of log policy/w2', dlnpi_dw3,dlnpi_dw3.shape)
+
+    return dlnpi_dw1,dlnpi_dw2,dlnpi_dw3
