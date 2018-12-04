@@ -1,0 +1,43 @@
+
+
+
+import numpy as np
+import matplotlib as mlp
+import matplotlib.pyplot as plt
+from split_list import split
+from lorenzdata import lorenz,trajectory,plot
+import math
+import sympy as sp
+############## define the NN structure #########################################
+def layer_size(x,y):
+    from lorenzdata import lorenz, trajectory, plot
+    n_x = x.shape[0]  # size of input layer
+    n_h = 6         #size of hidden layer
+    n_y = y.shape[0]  # size of output layer
+    return (n_x, n_h, n_y)
+
+dt=0.005
+l=lorenz(dt)
+steps=1000
+t = trajectory(l,(1.0,0.0,0.0),steps)
+x_assess,y_assess=plot(t)
+(n_x, n_h, n_y) = layer_size(x_assess, y_assess)
+print("The size of the input layer is: n_x = " + str(n_x))
+print("The size of the hidden layer is: n_h = " + str(n_h))
+print("The size of the output layer is: n_y = " + str(n_y))
+
+##################### initialize the model's parameters ##################################
+
+def initialize_parameters(layer_dims):
+    np.random.seed(4)
+    parameters = {}
+    L = len(layer_dims)  # number of layers in the network
+    for l in range(1, 3):
+
+        parameters['W' + str(l)] = np.random.randn(layer_dims[l], layer_dims[l - 1]) * 0.01
+        parameters['b' + str(l)] = np.zeros((layer_dims[l], 1))
+        assert (parameters['W' + str(l)].shape == (layer_dims[l], layer_dims[l - 1]))
+        assert (parameters['b' + str(l)].shape == (layer_dims[l], 1))
+
+    parameters['W' + str(3)] = np.random.randn(layer_dims[3], layer_dims[3 - 2]) * 0.01
+    parameters['b' + str(3)] = np.zeros((layer_dims[3], 1))
