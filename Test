@@ -1,0 +1,80 @@
+from Data import data
+#from split_list import split
+#from derivate import deriv
+#from backpropagation import history,pre_update,update
+from neural_network import initialize_parameters,forward_propagation
+from Agent_test import new_Agent
+import matplotlib.pyplot as plt
+import numpy as np
+#Generate data
+n_training=2564
+n_test=3205
+input_data,out_target=data() # generate the hole matrix of input and vector of the output
+#input_data=input_data_all[:,n_training:n_test]
+n_history=3
+#initialize parameters
+agent=new_Agent()
+#agent.initialize()
+parameters = agent.initialize() ##
+#training model
+
+
+def generate_session():
+    #print('input_data',input_data)
+    input_shuffle = input_data[0:n_history, :]
+    output_shuffle = input_data[n_history, :]
+    tmax = 2564
+    tmax2 = 3202
+    agent.initializehistory()
+
+    pred1 = []
+    pred2 = []
+    e = []
+    H=input_data[0:3,tmax-1]
+    pred2= H.tolist() #list qui contient le dernier state
+    #print(H)
+    for t in range(tmax):
+        state,target,prediction,parameters1= agent.train(t,input_shuffle,output_shuffle,parameters)
+        parameters1=parameters
+        pred1.append(prediction[0].tolist()[0]) #list of prediction
+        error=abs(pred1[t][0]-out_target.tolist()[0][t])
+
+    #for t in range(tmax2):
+
+        ##state, target, prediction, parameters1 = agent.train(t, input_shuffle, output_shuffle, parameters)
+        ##parameters1=parameters
+        ##pred2.append(prediction[0].tolist()[0]) #list of prediction
+        ## error=abs(pred2[t-tmax][0]-out_target.tolist()[0][t])
+    for t in range(tmax,tmax2):
+        l = len(pred2)
+        state = [pred2[l - 3], pred2[l - 2], pred2[l - 1]] #contient les 3 dernieres valeurs prédites
+        H1=np.asarray(state)
+        R, mu, sig, prediction, prob, cache = forward_propagation(H1, parameters)
+        pred2.append(prediction[0].tolist()) #les valeurs prédites
+        error=abs(pred2[t-tmax][0]-out_target.tolist()[0][t])
+        e.append(error)
+    return pred1,pred2,parameters,e
+
+iter=1
+for j in range(iter):
+
+    #print("j",j)
+     y_predit,pred2,parameters,error = generate_session()
+     #print(error)
+     print('after iteration', j)
+
+     if j % 1== 0:
+        #print(error)
+        plt.plot(error, color='gray', label='Error', linestyle='--')
+        plt.plot(pred2,color='red',label='Test Prediction using SGA')
+        plt.plot(y_predit, color='yellow', label='Training Prediction using SGA')
+        plt.plot(out_target.tolist()[0],color='blue', label='Korean time series')
+
+        plt.xlabel('Time')
+        plt.ylabel('Value')
+        #plt.title( 'Iteration N° '+str(j))
+        plt.legend(loc='upper left')
+
+        plt.show()
+        #plt.savefig('/home/mariam/Bureau/trainbestRealData/itération' +str(j)+'.png')
+       # plt.close()
