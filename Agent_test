@@ -1,0 +1,47 @@
+import numpy as np
+import pandas as pd
+#from lorenzdata import lorenz,trajectory,plot
+#from split_list import split
+from derive import deriv
+from updates import history,pre_update,update
+from neural_network import initialize_parameters,forward_propagation
+import json
+n_history = 3
+class new_Agent:
+
+ def initialize (self):
+    #self.parameters = initialize_parameters([n_history, 60, 1, 1, 1])
+    with open('weights1750.json', 'r') as f:
+        dictionary1=json.load(f)
+
+    self.parameters={}
+    self.parameters['W1'] = np.array(dictionary1['W1'])
+    self.parameters['W2'] = np.array(dictionary1['W2'])
+    self.parameters['W3'] = np.array(dictionary1['W3'])
+    return self.parameters
+
+
+ def initializehistory(self):
+
+     np.random.seed(0)
+     self.D01 =np.random.randn(60,n_history)* 0.01
+     self.D02=np.random.randn(1,60)* 0.01
+     self.D03=np.random.randn(1,60)* 0.01
+
+
+ def train(self,t,states,targets,parameters):   #t is the current state , states is the hole input matrix which contain all the states ,targets is the hole vector of target
+    #print(t)
+    state=states[:,t] #vector of the current state  #the input
+
+    #print('the state is',state)
+    #print('##',state)
+    target=targets[:,t]
+    #print('the target is',target)
+    R, mu, sig, y_hat, prob, cache = forward_propagation(state, self.parameters)
+    #co = compute_cost(y_hat, target)
+    #dlnpi_dw1, dlnpi_dw2, dlnpi_dw3 = deriv(self.parameters['W2'],self.parameters['W3'],mu, sig, y_hat, state, R)
+    #self.D01,self.D02,self.D03 = history(self.D01,self.D02, self.D03, dlnpi_dw1, dlnpi_dw2, dlnpi_dw3)
+    #dW1, dW2, dW3 = pre_update(self.D01, self.D02, self.D03, y_hat, target)
+    #self.parameters['W1'], self.parameters['W2'], self.parameters['W3'] = update(self.parameters['W1'],self.parameters['W2'],self.parameters['W3'], dW1, dW2, dW3)
+
+    return state,target,y_hat,parameters
