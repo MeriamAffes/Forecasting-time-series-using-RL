@@ -7,6 +7,7 @@ In simulation, and to have a general model, we generate an artiﬁcial nonlinear
 By the end, we used the simulation result, and compared short-term prediction accuracy of our proposed method with classical learning method.
 keywords : Forecasting, machine learning,Neural Network, Reinforcement Learning, stochastic gradient ascent,nonlinear data, time series
 
-This work is based on the following paper: "Nonlinear Prediction by reinforcement learning" 
-Authors: Takashi Kuremoto and Masanao Obayashi 
-Published: August 2005
+This work is based on the following paper: "Nonlinear Prediction by reinforcement learning".
+Authors: Takashi Kuremoto and Masanao Obayashi .
+Published: August 2005.
+You can use data from yahoo.finance
