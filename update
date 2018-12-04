@@ -1,0 +1,43 @@
+import numpy as np
+
+def history(D,dlnpi_dw1, dlnpi_dw2, dlnpi_dw3):
+    D0=D
+    gamma=0.9
+    D1=dlnpi_dw1+gamma*D0
+    print('first history',D1)
+    D2=dlnpi_dw2+gamma*D0
+    print('second history',D2)
+    D3=dlnpi_dw3+gamma*D0
+    print('the third history',D3)
+
+    return D1,D2,D3
+
+#########################################################
+def pre_update(y_hat,y_assess,D,dlnpi_dw1, dlnpi_dw2, dlnpi_dw3):
+    eps=0.1
+    r1 = 0.0004 - 4
+    r2 = -4.0004
+    b=1
+    D1, D2, D3 = history(D, dlnpi_dw1, dlnpi_dw2, dlnpi_dw3)
+    if abs(y_hat-y_assess)<=eps:
+        print('the reward is equal to',r1)
+        dW1=(r1-b)*D1
+        dW2 = (r1 - b) * D2
+        dW3 = (r1 - b) * D3
+
+    else:
+        print('the reward is equal to',r2)
+        dW1 = (r2 - b) * D1
+        dW2 = (r2 - b) * D2
+        dW3 = (r2 - b) * D3
+    return dW1,dW2,dW3
+
+#########################################################
+
+def update(W1,W2,W3,dW1,dW2,dW3):
+    gama=0.9
+    W1= W1+0.000002*(1-gama)*dW1
+    W2 =W2 + 0.00002* (1 - gama) * dW2
+    W3 =W3 + 0.000002* (1 - gama) * dW3
+    return W1,W2,W3
+#########################################################
