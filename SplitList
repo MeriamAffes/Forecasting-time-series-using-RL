@@ -1,0 +1,20 @@
+import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+################################################################
+def split(s,n):
+    len_l1 = n
+    l =[] #list of list l1
+    y=[] # vector of target
+    for i in range(0,len(s)-len_l1):
+        l1=[] # the short list in l
+        #print(l)
+        for j in range(0,len_l1):
+            l1.append(s[i+j])
+        l.append(l1)
+        l_matrix=np.matrix(l)
+        input_value=np.transpose(l_matrix)
+        y.append(s[i+len_l1])
+        target=np.array([y])
+
+    return input_value,target
