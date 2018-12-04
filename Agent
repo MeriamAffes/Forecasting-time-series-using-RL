@@ -1,0 +1,63 @@
+import numpy as np
+import pandas as pd
+#from lorenzdata import lorenz,trajectory,plot
+#from split_list import split
+from derive import deriv
+from updates import history,pre_update,update
+from neural_network import initialize_parameters,forward_propagation
+n_h=60
+n_history = 3
+class new_Agent:
+
+ def initialize (self):
+    self.parameters = initialize_parameters([n_history, n_h, 1, 1, 1])
+
+ def initializehistory(self):
+
+     np.random.seed(0)
+     self.D01 =np.random.randn(n_h,n_history)* 0.01
+     self.D02=np.random.randn(1,n_h)* 0.01
+     self.D03=np.random.randn(1,n_h)* 0.01
+
+
+ def train(self,t,states,targets,parameters):   #t is the current state , states is the hole input matrix which contain all the states ,targets is the hole vector of target
+    state=states[:,t] #vector of the current state  #the input
+    #print('the state is',state)
+    target=targets[:,t]
+    #print('the target is',target)
+    R, mu, sig, y_hat, prob, cache = forward_propagation(state, self.parameters)
+    #co = compute_cost(y_hat, target)
+    dlnpi_dw1, dlnpi_dw2, dlnpi_dw3 = deriv(self.parameters['W2'],self.parameters['W3'],mu, sig, y_hat, state, R)
+    self.D01,self.D02,self.D03 = history(self.D01,self.D02, self.D03, dlnpi_dw1, dlnpi_dw2, dlnpi_dw3)
+    dW1, dW2, dW3 = pre_update(self.D01, self.D02, self.D03, y_hat, target)
+    self.parameters['W1'], self.parameters['W2'], self.parameters['W3'] = update(self.parameters['W1'],self.parameters['W2'],self.parameters['W3'], dW1, dW2, dW3)
+
+
+    return state,target,y_hat,parameters
+
+ def file(self):
+    #import csv
+    dictionary = {}
+    dictionary['W1'] = self.parameters['W1'].tolist()
+    dictionary['W2'] = self.parameters['W2'].tolist()
+    dictionary['W3'] = self.parameters['W3'].tolist()
+
+    import json
+
+    with open('weightsTrainTest.json', 'w') as fp:
+        json.dump(dictionary, fp)
+
+    #f = open('weights update', "a+")
+    #w = csv.writer(open("weights update0.004 bestrealDatatest .csv", "w"))
+    #for key, val in self.parameters.items():
+     #   w.writerow([key, val])
+    #seq1 = ["%s" % item for item in self.parameters['1W1']]
+    #f.write("###### W1 ######")
+    #f.writelines(seq1)
+    #seq2 = ["%s" % item for item in self.parameters['W2']]
+    #f.write("###### W2 ######")
+    #f.writelines(seq2)
+    #seq3 = ["%s" % item for item in self.parameters['W3']]
+    #f.write("###### W3 ######")
+    #f.writelines(seq3)
+    #f.close()
