@@ -1,0 +1,41 @@
+
+
+def lorenz(dt,sigma=16.0,beta=4.0,ro=45.92):
+    def l(x,y,z):
+        xn = y*dt*sigma + x*(1 - dt*sigma) # à prédire
+        yn = x*dt*(ro-z) + y*(1-dt)
+        zn = x*y*dt + z*(1 - dt*beta)
+        return (xn,yn,zn)
+    return l
+
+
+
+def trajectory(system,origin,steps):
+    t = [origin]
+    for _ in range(steps):
+        t.append(system(*t[-1]))
+        #print(t[-1])
+    return t
+
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
+
+def plot(t):
+    from split_list import split
+    mainlist = []
+    liste = [x for (x, _, _) in t]
+    print('aaa')
+    list1=split(liste,10)
+    f = open("data100000", "a+")
+    f.writelines(["%s" % item for item in list1])
+
+    f = open('/home/mariam/PycharmProjects/stage/data100000', 'r')
+    for line in f:
+        mainlist.append(line)
+    f.close()
+    print(mainlist[0])
+    #plt.plot(list1)
+    #plt.xlabel('step')
+    #plt.show()
